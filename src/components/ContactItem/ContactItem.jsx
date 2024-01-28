@@ -1,26 +1,21 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { removeContact } from 'store/contacts/contactsSlice';
-
 import css from '../ContactItem/ContactItem.module.css';
+import { deleteContact } from 'store/operations';
+import { selectVisibleContacts } from 'store/selectors';
 
 export const ContactItem = () => {
-  const contacts = useSelector(store => store.contactsScope.contacts);
+  const contacts = useSelector(selectVisibleContacts);
   const dispatch = useDispatch();
 
   const handleDeleteContact = contactId => {
-    dispatch(removeContact(contactId));
+    dispatch(deleteContact(contactId));
   };
-  const filter = useSelector(store => store.contactsScope.filter);
-
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.trim().toLowerCase())
-  );
 
   return (
     <>
-      {filteredContacts?.map(contact => (
+      {contacts?.map(contact => (
         <li key={contact.id} className={css.contactField}>
           <p className={css.contact}>
             {contact.name}:&nbsp;

@@ -1,15 +1,10 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { customAlphabet } from 'nanoid';
-
-import { addContact } from 'store/contacts/contactsSlice';
 import css from '../AddContactForm/AddContactForm.module.css';
-
-const nanoid = customAlphabet('1234567890abcdef', 4);
+import { addContact } from 'store/operations';
 
 export const AddContactForm = () => {
-  const contacts = useSelector(store => store.contactsScope.contacts);
   const dispatch = useDispatch();
 
   const handleFormSubmit = event => {
@@ -18,24 +13,12 @@ export const AddContactForm = () => {
     const contactName = event.target.elements.contactName.value;
     const phoneNumber = event.target.elements.phoneNumber.value;
 
-    const hasDuplicates = contacts.some(
-      contact => contact.name.toLowerCase() === contactName.toLowerCase()
-    );
-
-    if (hasDuplicates) {
-      alert(`${contactName} is already in contacts!`);
-      return;
-    }
-
-    const newContact = {
-      id: nanoid(),
+    const contactData = {
       name: contactName,
-      number: phoneNumber,
+      phone: phoneNumber,
     };
 
-    const action = addContact(newContact);
-    dispatch(action);
-
+    dispatch(addContact(contactData));
     event.target.reset();
   };
 
