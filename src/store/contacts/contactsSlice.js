@@ -24,21 +24,18 @@ const contactsSlice = createSlice({
       .addCase(fetchContacts.pending, handlePending)
       .addCase(fetchContacts.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.error = null;
         state.contacts = action.payload;
       })
       .addCase(fetchContacts.rejected, handleRejected)
       .addCase(addContact.pending, handlePending)
       .addCase(addContact.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.error = null;
         state.contacts.push(action.payload);
       })
       .addCase(addContact.rejected, handleRejected)
       .addCase(deleteContact.pending, handlePending)
       .addCase(deleteContact.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.error = null;
         const index = state.contacts.findIndex(
           contact => contact.id === action.payload.id
         );

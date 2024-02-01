@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 
 import css from '../AddContactForm/AddContactForm.module.css';
@@ -7,9 +8,11 @@ import { addContact } from 'store/operations';
 export const AddContactForm = () => {
   const dispatch = useDispatch();
 
+  const [isAdding, setIsAdding] = useState(false);
+
   const handleFormSubmit = event => {
     event.preventDefault();
-
+    setIsAdding(true);
     const contactName = event.target.elements.contactName.value;
     const phoneNumber = event.target.elements.phoneNumber.value;
 
@@ -18,8 +21,16 @@ export const AddContactForm = () => {
       phone: phoneNumber,
     };
 
-    dispatch(addContact(contactData));
-    event.target.reset();
+    dispatch(addContact(contactData))
+      .then(() => {
+        event.target.reset();
+      })
+      .catch(error => {
+        toast.error(`Error: ${error.message}`);
+      })
+      .finally(() => {
+        setIsAdding(false);
+      });
   };
 
   return (
@@ -46,8 +57,8 @@ export const AddContactForm = () => {
         />
       </label>
 
-      <button type="submit" className={css.submitBtn}>
-        Add contact
+      <button type="submit" className={css.submitBtn} disabled={isAdding}>
+        {isAdding ? 'Adding...' : 'Add Contact'}
       </button>
     </form>
   );
