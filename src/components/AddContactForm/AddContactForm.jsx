@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import css from '../AddContactForm/AddContactForm.module.css';
 import { addContact } from 'store/operations';
+import { selectContacts } from 'store/selectors';
 
 export const AddContactForm = () => {
   const dispatch = useDispatch();
+  const contacts = useSelector(selectContacts);
 
   const [isAdding, setIsAdding] = useState(false);
 
@@ -21,16 +23,17 @@ export const AddContactForm = () => {
       phone: phoneNumber,
     };
 
-    dispatch(addContact(contactData))
-      .then(() => {
-        event.target.reset();
-      })
-      .catch(error => {
-        toast.error(`Error: ${error.message}`);
-      })
-      .finally(() => {
-        setIsAdding(false);
-      });
+    const checkDuplicate = contactName => {
+      return contacts.some(contact => contact.name === contactName);
+    };
+    if (!checkDuplicate(contactData.name)) {
+      dispatch(addContact(contactData));
+      setIsAdding(false);
+      event.target.reset();
+    } else {
+      toast(`${contactData.name} is already in contacts!`);
+      setIsAdding(false);
+    }
   };
 
   return (
